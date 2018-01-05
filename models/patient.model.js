@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var ObjectID = require('mongodb').ObjectID;
 var Schema = mongoose.Schema;
 
 var PatientSchema = Schema({
@@ -13,6 +14,7 @@ var PatientSchema = Schema({
   createdBy: { type: String, required: true },
   glucose: [
     {
+      _id: {type:String, default: new ObjectID()},
       value: {type: Number, required: true},
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now },

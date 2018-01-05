@@ -9,7 +9,6 @@ var permissions = {
             "POST",
             "PUT"
         ],
-
         GLUCOSE: [
             "GET",
             "POST",

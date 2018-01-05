@@ -1,39 +1,43 @@
-var doctorSchema = require('../models/doctor.model');
+var doctorService = require('../services/doctor.service');
 
 
 function getDoctor(req, res) {
     let doctorId = req.params.id;
     console.log('entra a getDoctor...');
-    doctorSchema.findById( doctorId )
+    doctorService.getDoctor( doctorId )
     .then( doctor => {
         res.status(200).send({doctor: doctor, title: 'Detalle de doctor'} );
-    });
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: 'Doctor no encontrado'} );
+    })
 }
+
 
 
 function getDoctors(req, res) {
     console.log('entra a getDoctors...');
-    doctorSchema.find({})
+    doctorService.getDoctors()
     .then( doctors => {
         res.status(200).send( {doctors} );
-    });
+    })
+    .catch(error => {
+        res.status(404).send( {error} );
+    })
 }
 
 
 function saveDoctor(req, res) {
     let doctor = req.body.doctor;
-    console.log(doctor);
-    let newDoctor = new doctorSchema( doctor );
-    newDoctor.save( (err, doctorStored) => {
-        if(err) {
-            throw err;
+    doctorService.saveDoctor()
+    .then(doctorStored => {
+        if( doctorStored ) {
+            res.status(200).send({newDoctor: doctorStored, message: 'Doctor guardado correctamente.'});
         }
-        else {
-            if( doctorStored ) {
-                res.status(200).send({newDoctor: doctorStored, message: 'Doctor guardado correctamente.'});
-            }
-        }
-    });
+    })
+    .catch(error => {
+        res.status(404).send( {error} );
+    })
 }
 
 
@@ -41,14 +45,15 @@ function saveDoctor(req, res) {
 function editDoctor( req, res ) {
     let doctor = req.body.doctor;
     let doctorId = req.body.doctorId;
-    console.log(doctor);
-  
-    doctorSchema.findByIdAndUpdate(doctorId, doctor)
+    doctorService.editDoctor(doctorId, doctor)
     .then( (doctorUpdated) => {
-      if(doctorUpdated) {
-        res.status(200).send({doctorUpdated: doctorUpdated, message: 'Doctor actualizado correctamente'});
-      }
-    });
+        if(doctorUpdated) {
+            res.status(200).send({doctorUpdated: doctorUpdated, message: 'Doctor actualizado correctamente'});
+        }
+    })
+    .catch(error => {
+        res.status(404).send({error, message: "No se puedo actualizar el doctor"});
+    })
   }
 
 

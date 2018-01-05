@@ -1,19 +1,53 @@
 
 var UserModel = require('./../models/user.model');
+var permissions = require('../routes/permissions');
 
-function isAuthorized(req, res, next) {
-    let credentials = req.body.credentials;
+function isAuthenticate(req, res, next) {
+    if(req.user) {
+        next();
+    }
+    res.status(401).send("Unautthenticated.");
+}
 
-    let user = UserModel.login(credentials);
-    if( user ) {
-        if( user.role === "ADMIN" ) {
-            next();
+
+
+
+function isAuthorized(routes) {
+    return function(req, res, next) {
+        if( req.user ) {
+            let role = req.user.role;
+            if(allowPath(role, routes, req)) {
+                next();
+            }
+        }
+        res.status(401).send('Unauthorized.');
+    }
+}
+
+
+
+
+function allowPath(role, routes, req) {
+    let allow = permissions.DOCTOR;
+    if(role === "ADMIN") {
+        return true;
+    }
+    else {
+        if( role === "APP" ) {
+            allow = permissions.APP;
+        }
+        if( allow[routes] && allow[routes].includes(req.method) ) {
+            if(req.method == "PUT" && req.user._id != req.body.doctor) {
+                return false;
+            }
+            return true;
         }
     }
-    res.status(401).send('Unauthenticate.');
+    return false;
 }
 
 module.exports = {
+    isAuthenticate,
     isAuthorized
 }
 

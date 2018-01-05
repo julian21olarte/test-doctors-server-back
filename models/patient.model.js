@@ -10,11 +10,13 @@ var PatientSchema = Schema({
   phone: { type: Number, required: true },
   dateOfBirth : { type: Date, required: true },
   document : { type: String, required: true, unique: true },
+  createdBy: { type: String, required: true },
   glucose: [
     {
       value: {type: Number, required: true},
       createdAt: { type: Date, default: Date.now },
-      updatedAt: { type: Date, default: Date.now }
+      updatedAt: { type: Date, default: Date.now },
+      createdBy: { type: String, required: true }
     }
   ]
 });

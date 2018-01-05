@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var doctor = require('./routes/doctor.routes.js');
 var patient = require('./routes/patient.routes.js');
+var auth = require('./routes/auth.routes.js');
 
 //MongoDB Setup (Mongoose)
 var mongoose = require('mongoose');
@@ -31,6 +32,7 @@ app.use(cookieParser());
 //routes
 app.use('/api/doctor', doctor);
 app.use('/api/patient', patient);
+app.use('/auth', auth);
 
 
 // catch 404 and forward to error handler

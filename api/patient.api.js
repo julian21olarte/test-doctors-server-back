@@ -1,12 +1,20 @@
-var patientSchema = require('../models/patient.model');
+var patientService = require('../services/patient.service');
 
 
 
 function getPatients(req, res) {
     console.log('entra a getPatients...');
-    patientSchema.find({})
+    patientService.getPatients()
     .then( patients => {
+        patients.forEach(patient => {
+            if( patient.createdBy !== req.user._id ) {
+                delete patient.createdBy;
+            }
+        });
         res.status(200).send( {patients} );
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "No existen pacientes"} );
     });
 }
 
@@ -14,20 +22,30 @@ function getPatients(req, res) {
 
 function getPatient(req, res) {
     let patientId = req.params.id;
-    console.log('entra a getPatient (1 solo)...');
-    patientSchema.findById( patientId )
+    patientService.getPatient( patientId )
     .then( patient => {
+        if( patient.createdBy !== req.user._id ) {
+            delete patient.createdBy;
+        }
         res.status(200).send({patient: patient, title: 'Detalle de paciente'} );
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "Paciente no encontrado"} );
     });
 }
 
 
 function getPatientByDocument(req, res) {
     let document = req.params.document;
-    console.log('entra a getPatient (1 solo)...');
-    patientSchema.findById( document )
+    patientService.getPatientByDocument( document )
     .then( patient => {
+        if( patient.createdBy !== req.user._id ) {
+            delete patient.createdBy;
+        }
         res.status(200).send({patient: patient, title: 'Detalle de paciente'} );
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "Paciente no encontrado"} );
     });
 }
 
@@ -35,17 +53,14 @@ function getPatientByDocument(req, res) {
 
 function savePatient(req, res) {
     let patient = req.body.patient;
-    console.log(patient);
-    let newPatient = new patientSchema( patient );
-    newPatient.save( (err, patientStored) => {
-        if(err) {
-            throw err;
+    patientService.savePatient()
+    .then(patientStored => {
+        if( patientStored ) {
+            res.status(200).send({newPatient: patientStored, message: 'Paciente guardado correctamente.'});
         }
-        else {
-            if( patientStored ) {
-                res.status(200).send({newPatient: patientStored, message: 'Paciente guardado correctamente.'});
-            }
-        }
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "Paciente no fue guardado correctamente"} );
     });
 }
 
@@ -54,13 +69,15 @@ function savePatient(req, res) {
 function editPatient( req, res ) {
     let patient = req.body.patient;
     let patientId = req.body.patientId;
-    console.log(patient);
   
-    patientSchema.findByIdAndUpdate(patientId, patient)
+    patientService.editPatient(patientId, patient)
     .then( (patientUpdated) => {
       if(patientUpdated) {
         res.status(200).send({patientUpdated: patientUpdated, message: 'Paciente actualizado correctamente'});
       }
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "Paciente no fue actualizado correctamente"} );
     });
   }
 
@@ -69,15 +86,32 @@ function editPatient( req, res ) {
   function addGlucose(req, res) {
     let patientId = req.body.patientId;
     let glucose = req.body.glucose;
-  
-    patientSchema.findByIdAndUpdate(patientId, 
-        {$push: {glucose: glucose}},
-        {safe: true, upsert: true})
+    patientService.addGlucose(patientId, glucose)
     .then( (patientUpdated) => {
-      if(patientUpdated) {
-        res.status(200).send({patientUpdated: patientUpdated, message: 'Paciente actualizado correctamente'});
-      }
+        if(patientUpdated) {
+            res.status(200).send({patientUpdated: patientUpdated, message: 'Paciente actualizado correctamente'});
+        }
+    })
+    .catch(error => {
+        res.status(404).send( {error, message: "Paciente no fue actualizado correctamente"} );
     });
+  }
+
+
+  function getGlucose(req, res) {
+      let patientId = req.body.patientId;
+      patient.patientService.getPatient(patientId)
+      .then(patient => {
+        patientService.glucose.forEach(glucose => {
+            if( glucose.createdBy !== req.user._id ) {
+                delete glucose.createdBy;
+            }
+        });
+        res.status(200).send( {glucoseMeditions: patient.glucose} );
+      })
+      .catch(error => {
+        res.status(404).send( {error} );
+      });
   }
 
 
@@ -86,5 +120,7 @@ module.exports = {
     getPatients,
     savePatient,
     editPatient,
-
+    addGlucose,
+    getPatientByDocument,
+    getGlucose
 }

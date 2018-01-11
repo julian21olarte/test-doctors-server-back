@@ -1,4 +1,4 @@
-
+'use strict';
 var UserModel = require('./../models/user.model');
 var permissions = require('../routes/permissions');
 

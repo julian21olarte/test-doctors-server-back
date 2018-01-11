@@ -1,5 +1,5 @@
+'use strict';
 var patientService = require('../services/patient.service');
-
 
 
 function getPatients(req, res) {

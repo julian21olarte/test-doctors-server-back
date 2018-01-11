@@ -1,3 +1,4 @@
+'use strict';
 var doctorSchema = require('../models/doctor.model');
 
 

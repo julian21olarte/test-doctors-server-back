@@ -1,4 +1,4 @@
-
+'use strict';
 function login(req, res) {
     let credentials = req.authUserCredentials;
     let user = UserModel.login(credentials);

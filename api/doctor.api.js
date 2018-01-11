@@ -29,7 +29,7 @@ function getDoctors(req, res) {
 
 function saveDoctor(req, res) {
     let doctor = req.body.doctor;
-    doctorService.saveDoctor()
+    doctorService.saveDoctor(doctor)
     .then(doctorStored => {
         if( doctorStored ) {
             res.status(200).send({newDoctor: doctorStored, message: 'Doctor guardado correctamente.'});

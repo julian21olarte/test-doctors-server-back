@@ -32,16 +32,14 @@ function allowPath(role, routes, req) {
     if(role === "ADMIN") {
         return true;
     }
-    else {
-        if( role === "APP" ) {
-            allow = permissions.APP;
+    if( role === "APP" ) {
+        allow = permissions.APP;
+    }
+    if( allow[routes] && allow[routes].includes(req.method) ) {
+        if(req.method == "PUT" && req.user._id != req.body.doctor) {
+            return false;
         }
-        if( allow[routes] && allow[routes].includes(req.method) ) {
-            if(req.method == "PUT" && req.user._id != req.body.doctor) {
-                return false;
-            }
-            return true;
-        }
+        return true;
     }
     return false;
 }

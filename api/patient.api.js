@@ -53,7 +53,7 @@ function getPatientByDocument(req, res) {
 
 function savePatient(req, res) {
     let patient = req.body.patient;
-    patientService.savePatient()
+    patientService.savePatient(patient)
     .then(patientStored => {
         if( patientStored ) {
             res.status(200).send({newPatient: patientStored, message: 'Paciente guardado correctamente.'});

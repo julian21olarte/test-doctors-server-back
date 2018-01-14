@@ -3,10 +3,13 @@ var UserModel = require('./../models/user.model');
 var permissions = require('../routes/permissions');
 
 function isAuthenticate(req, res, next) {
+    console.log('exist user:---------', req.user);
     if(req.user) {
         next();
     }
-    res.status(401).send("Unautthenticated.");
+    else {
+        res.status(401).send("Unauthenticated.");
+    }
 }
 
 

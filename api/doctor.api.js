@@ -23,7 +23,7 @@ function getDoctors(req, res) {
         res.status(200).send( {doctors} );
     })
     .catch(error => {
-        res.status(404).send( {error} );
+        res.status(405).send( {error} );
     })
 }
 

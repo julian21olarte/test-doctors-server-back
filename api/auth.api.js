@@ -1,19 +1,25 @@
 'use strict';
+var authService = require('../services/auth.service');
+
 function login(req, res) {
-    let credentials = req.authUserCredentials;
-    let user = UserModel.login(credentials);
-    if( user ) {
-        req.user = user;
-        res.status(200).send("Login Exitoso");
-    }
-    res.status(401).send('Error, No existe ningun usuario con esos datos.');
+    let credentials = req.body;
+    authService.login(credentials)
+    .then(user => {
+        if( user ) {
+            req.user = user;
+            res.status(200).send({user, message: 'Login exitoso'});
+        }
+        else {
+            res.status(404).send('Error, No existe ningun usuario con esos datos.');
+        }
+    });
 }
 
 
 
 function logout(req, res) {
-    delete request.user;
-    res.status(200).send("Logout!!!");
+    delete req.user;
+    res.status(200).send("Logout successfull");
 }
 
 

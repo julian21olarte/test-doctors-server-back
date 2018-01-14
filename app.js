@@ -17,11 +17,11 @@ var auth = require('./routes/auth.routes.js');
 var mongoose = require('mongoose');
 var mongo_url = db_config.test;
 mongoose.Promise = global.Promise;
-mongoose.connect(mongo_url, {useMongoClient: true})
-.then( () => {
-  console.log('Conexion a DB correcta...');
-})
-.catch(err => console.log(err));
+mongoose.connect(mongo_url)
+  .then( () => {
+    console.log('Conexion a DB correcta...');
+  })
+  .catch(err => console.log(err));
 
 
 var app = express();
@@ -34,6 +34,7 @@ app.use(cookieParser());
 
 
 //routes
+app.use('/api/status',(req, res) => res.send({status : 'OK', time : Date.now()}))
 app.use('/api/doctor', doctor);
 app.use('/api/patient', patient);
 app.use('/auth', auth);

@@ -1,12 +1,15 @@
-
+'use strict';
 var UserModel = require('./../models/user.model');
 var permissions = require('../routes/permissions');
 
 function isAuthenticate(req, res, next) {
+    console.log('exist user:---------', req.user);
     if(req.user) {
         next();
     }
-    res.status(401).send("Unautthenticated.");
+    else {
+        res.status(401).send("Unauthenticated.");
+    }
 }
 
 
@@ -32,16 +35,14 @@ function allowPath(role, routes, req) {
     if(role === "ADMIN") {
         return true;
     }
-    else {
-        if( role === "APP" ) {
-            allow = permissions.APP;
+    if( role === "APP" ) {
+        allow = permissions.APP;
+    }
+    if( allow[routes] && allow[routes].includes(req.method) ) {
+        if(req.method === "PUT" && req.user._id !== req.body.doctor) {
+            return false;
         }
-        if( allow[routes] && allow[routes].includes(req.method) ) {
-            if(req.method == "PUT" && req.user._id != req.body.doctor) {
-                return false;
-            }
-            return true;
-        }
+        return true;
     }
     return false;
 }

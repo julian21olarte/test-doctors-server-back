@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express');
 var router = express.Router();
 var patient = require('../api/patient.api');
@@ -11,6 +12,7 @@ router.put('/edit', auth.isAuthenticate, auth.isAuthorized("PATIENT"), patient.e
 
 router.get('/:id/glucose', auth.isAuthenticate, auth.isAuthorized("GLUCOSE"), patient.getGlucose);
 router.post('/glucose', auth.isAuthenticate, auth.isAuthorized("GLUCOSE"), patient.addGlucose);
+router.put('/glucose/edit', auth.isAuthenticate, auth.isAuthorized("GLUCOSE"), patient.editGlucose);
 
 
 

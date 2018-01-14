@@ -1,3 +1,4 @@
+'use strict';
 var patientSchema = require('../models/patient.model');
 
 
@@ -34,9 +35,10 @@ function editPatient( patientId, patient ) {
 
   function addGlucose(patientId, glucose) {
     return patientSchema.findByIdAndUpdate(patientId, 
-        {$push: {glucose: glucose}},
+        {$push: {glucose}},
         {safe: true, upsert: true});
   }
+
 
 module.exports = {
     getPatient,

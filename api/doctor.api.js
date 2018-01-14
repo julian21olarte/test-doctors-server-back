@@ -1,3 +1,4 @@
+'use strict';
 var doctorService = require('../services/doctor.service');
 
 
@@ -22,14 +23,14 @@ function getDoctors(req, res) {
         res.status(200).send( {doctors} );
     })
     .catch(error => {
-        res.status(404).send( {error} );
+        res.status(405).send( {error} );
     })
 }
 
 
 function saveDoctor(req, res) {
     let doctor = req.body.doctor;
-    doctorService.saveDoctor()
+    doctorService.saveDoctor(doctor)
     .then(doctorStored => {
         if( doctorStored ) {
             res.status(200).send({newDoctor: doctorStored, message: 'Doctor guardado correctamente.'});

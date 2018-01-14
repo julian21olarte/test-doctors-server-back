@@ -1,9 +1,13 @@
+'use strict';
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+
+var db_config = require('./db.config');
 
 var doctor = require('./routes/doctor.routes.js');
 var patient = require('./routes/patient.routes.js');
@@ -11,7 +15,7 @@ var auth = require('./routes/auth.routes.js');
 
 //MongoDB Setup (Mongoose)
 var mongoose = require('mongoose');
-var mongo_url = "mongodb://julian21olarte:julian21olarte@ds133597.mlab.com:33597/doctors-server";
+var mongo_url = db_config.test;
 mongoose.Promise = global.Promise;
 mongoose.connect(mongo_url, {useMongoClient: true})
 .then( () => {
@@ -22,7 +26,7 @@ mongoose.connect(mongo_url, {useMongoClient: true})
 
 var app = express();
 
-
+//app.use(session({secret: 'julian21olarte', saveUninitialized: true, resave: true}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -50,7 +54,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send(err);
 });
 
 module.exports = app;

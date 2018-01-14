@@ -1,5 +1,5 @@
+'use strict';
 var patientService = require('../services/patient.service');
-
 
 
 function getPatients(req, res) {
@@ -53,7 +53,7 @@ function getPatientByDocument(req, res) {
 
 function savePatient(req, res) {
     let patient = req.body.patient;
-    patientService.savePatient()
+    patientService.savePatient(patient)
     .then(patientStored => {
         if( patientStored ) {
             res.status(200).send({newPatient: patientStored, message: 'Paciente guardado correctamente.'});
@@ -115,6 +115,40 @@ function editPatient( req, res ) {
   }
 
 
+  
+  function editGlucose(req, res) {
+      let patientId = req.body.patientId;
+      let glucoseId = req.body.glucoseId;
+      let glucose   = req.body.glucose;
+      patientService.getPatient(patientId)
+      .then(patient => {
+          //obtengo el paciente
+          if(!patient) {
+              res.status(404).send({message: 'No existe el paciente'});
+          }
+          let index = patient.glucose.findIndex(meditionGlucose => {
+            return meditionGlucose._id === glucoseId;
+          });
+          //obtengo la medicion y la modifico
+          patient.glucose[index] = glucose;
+          patient.markModified('glucose');
+          //guardo
+          patient.save()
+          .then(patientUpdated => {
+            if(patientUpdated) {
+                res.status(200).send({patient: patientUpdated});
+            }
+          })
+          .catch(error => {
+            res.status(404).send( {error, message: "Medicion de glucosa no fue actualizada correctamente"} );
+          })
+      })
+      .catch(error => {
+        res.status(404).send( {error, message: "Medicion de glucosa no fue actualizada correctamente"} );
+      });
+  }
+
+
 module.exports = {
     getPatient,
     getPatients,
@@ -122,5 +156,6 @@ module.exports = {
     editPatient,
     addGlucose,
     getPatientByDocument,
-    getGlucose
+    getGlucose,
+    editGlucose
 }

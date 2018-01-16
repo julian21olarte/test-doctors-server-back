@@ -6,7 +6,7 @@ function login(req, res) {
     authService.login(credentials)
     .then(user => {
         if( user ) {
-            req.user = user;
+            req.session.user = user;
             res.status(200).send({user, message: 'Login exitoso'});
         }
         else {
@@ -18,7 +18,7 @@ function login(req, res) {
 
 
 function logout(req, res) {
-    delete req.user;
+    req.session.destroy();
     res.status(200).send("Logout successfull");
 }
 

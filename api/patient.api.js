@@ -7,7 +7,7 @@ function getPatients(req, res) {
     patientService.getPatients()
     .then( patients => {
         patients.forEach(patient => {
-            if( patient.createdBy !== req.user._id ) {
+            if( patient.createdBy !== req.session.user._id ) {
                 delete patient.createdBy;
             }
         });
@@ -24,7 +24,7 @@ function getPatient(req, res) {
     let patientId = req.params.id;
     patientService.getPatient( patientId )
     .then( patient => {
-        if( patient.createdBy !== req.user._id ) {
+        if( patient.createdBy !== req.session.user._id ) {
             delete patient.createdBy;
         }
         res.status(200).send({patient: patient, title: 'Detalle de paciente'} );
@@ -39,7 +39,7 @@ function getPatientByDocument(req, res) {
     let document = req.params.document;
     patientService.getPatientByDocument( document )
     .then( patient => {
-        if( patient.createdBy !== req.user._id ) {
+        if( patient.createdBy !== req.session.user._id ) {
             delete patient.createdBy;
         }
         res.status(200).send({patient: patient, title: 'Detalle de paciente'} );
@@ -103,7 +103,7 @@ function editPatient( req, res ) {
       patient.patientService.getPatient(patientId)
       .then(patient => {
         patientService.glucose.forEach(glucose => {
-            if( glucose.createdBy !== req.user._id ) {
+            if( glucose.createdBy !== req.session.user._id ) {
                 delete glucose.createdBy;
             }
         });

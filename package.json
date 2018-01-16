@@ -14,9 +14,10 @@
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
+    "mongodb": "^3.0.1",
     "mongoose": "latest",
-    "morgan": "~1.9.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "mocha": "^4.1.0",

@@ -3,8 +3,8 @@ var UserModel = require('./../models/user.model');
 var permissions = require('../routes/permissions');
 
 function isAuthenticate(req, res, next) {
-    console.log('exist user:---------', req.user);
-    if(req.user) {
+    //console.log('user logged middleware: ', req.session.user);
+    if(req.session.user) {
         next();
     }
     else {
@@ -17,8 +17,8 @@ function isAuthenticate(req, res, next) {
 
 function isAuthorized(routes) {
     return function(req, res, next) {
-        if( req.user ) {
-            let role = req.user.role;
+        if( req.session.user ) {
+            let role = req.session.user.role;
             if(allowPath(role, routes, req)) {
                 next();
             }
@@ -39,7 +39,7 @@ function allowPath(role, routes, req) {
         allow = permissions.APP;
     }
     if( allow[routes] && allow[routes].includes(req.method) ) {
-        if(req.method === "PUT" && req.user._id !== req.body.doctor) {
+        if(req.method === "PUT" && req.session.user._id !== req.body.doctor) {
             return false;
         }
         return true;

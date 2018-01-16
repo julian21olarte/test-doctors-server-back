@@ -4,9 +4,9 @@ const request = require('request');
 
 
 
-describe('Patient test tests', function() {
+describe('Patient tests', function() {
 
-    it('fake test 1', function (done) {
+    it('should access to ', function (done) {
         done();
     });
 });

@@ -4,7 +4,9 @@ var doctorService = require('../services/doctor.service');
 
 function getDoctor(req, res) {
     let doctorId = req.params.id;
-    console.log('entra a getDoctor...');
+    if(!doctorId) {
+        res.status(404).send('Id del doctor no fue proporcionado');
+    }
     doctorService.getDoctor( doctorId )
     .then( doctor => {
         res.status(200).send({doctor: doctor, title: 'Detalle de doctor'} );
@@ -17,7 +19,7 @@ function getDoctor(req, res) {
 
 
 function getDoctors(req, res) {
-    console.log('entra a getDoctors...');
+    console.log('user logged: ', req.session.user);
     doctorService.getDoctors()
     .then( doctors => {
         res.status(200).send( {doctors} );
@@ -30,6 +32,7 @@ function getDoctors(req, res) {
 
 function saveDoctor(req, res) {
     let doctor = req.body.doctor;
+    //console.log(req.body.doctor);
     doctorService.saveDoctor(doctor)
     .then(doctorStored => {
         if( doctorStored ) {

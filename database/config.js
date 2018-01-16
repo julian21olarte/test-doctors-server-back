@@ -6,7 +6,7 @@ var mongo_url = db_config.test;
 //MongoDB Setup (Mongoose)
 
 mongoose.Promise = global.Promise;
-mongoose.connect(mongo_url)
+mongoose.connect(mongo_url, {useMongoClient: true})
 .then( () => {
     console.log('Conexion a DB correcta...');
 })

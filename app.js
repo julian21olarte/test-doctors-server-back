@@ -6,22 +6,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var http = require('http');
+var port = process.env.PORT || '3000';
+var database = require('./database/config');
 
-var db_config = require('./db.config');
 
 var doctor = require('./routes/doctor.routes.js');
 var patient = require('./routes/patient.routes.js');
 var auth = require('./routes/auth.routes.js');
-
-//MongoDB Setup (Mongoose)
-var mongoose = require('mongoose');
-var mongo_url = db_config.test;
-mongoose.Promise = global.Promise;
-mongoose.connect(mongo_url, {useMongoClient: true})
-.then( () => {
-  console.log('Conexion a DB correcta...');
-})
-.catch(err => console.log(err));
 
 
 var app = express();
@@ -39,22 +31,12 @@ app.use('/api/patient', patient);
 app.use('/auth', auth);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+//server
+var server = app.listen(port, () => {
+  console.log("Server listening on " + port)
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.send(err);
-});
+app.stop = function() {
+  server.close();
+}
 
 module.exports = app;

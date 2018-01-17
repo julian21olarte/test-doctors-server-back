@@ -19,7 +19,6 @@ function getDoctor(req, res) {
 
 
 function getDoctors(req, res) {
-    console.log('user logged: ', req.session.user);
     doctorService.getDoctors()
     .then( doctors => {
         res.status(200).send( {doctors} );
@@ -32,7 +31,6 @@ function getDoctors(req, res) {
 
 function saveDoctor(req, res) {
     let doctor = req.body.doctor;
-    //console.log(req.body.doctor);
     doctorService.saveDoctor(doctor)
     .then(doctorStored => {
         if( doctorStored ) {

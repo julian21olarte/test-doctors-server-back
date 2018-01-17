@@ -22,5 +22,8 @@ let doctor = {
 module.exports = {
     ADMIN: admin,
     DOCTOR: doctor,
-    APP: app
+    APP: app,
+    CREDENTIALS: function(user) {
+        return {username: user.username, password: user.password};
+    }
 };

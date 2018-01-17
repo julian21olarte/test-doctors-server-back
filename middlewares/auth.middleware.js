@@ -3,11 +3,13 @@ var UserModel = require('./../models/user.model');
 var permissions = require('../routes/permissions');
 
 function isAuthenticate(req, res, next) {
-    //console.log('user logged middleware: ', req.session.user);
+    console.log('user logged middleware: ', req.session.user);
     if(req.session.user) {
+        console.log('si hay session');
         next();
     }
     else {
+        console.log('hay error');
         res.status(401).send("Unauthenticated.");
     }
 }

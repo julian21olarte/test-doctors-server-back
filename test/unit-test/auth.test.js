@@ -11,19 +11,19 @@ const userModel = require('../../models/user.model');
 describe('Auth login test', function() {
 
     before(() => {
-        this.timeout(800000000);
-        userModel.create(Object.values(users), function(err, resp) {
-            if(err) {
-                return should.not.exist(err);
-            }
-        });
+        // this.timeout(800000000);
+        // userModel.create(Object.values(users), function(err, resp) {
+        //     if(err) {
+        //         return should.not.exist(err);
+        //     }
+        // });
     });
     describe('test without user logged', () => {
-        it.skip('should login with admin account', function(done) {
+        it('should login with admin account', function(done) {
             this.timeout(80000);
             let options = {
                 url: 'http://localhost:3000/auth/login',
-                form: users.ADMIN
+                form: users.CREDENTIALS(users.ADMIN)
             }
             request.post(options, (err, httpResponse, body) => {
                 if(err) {
@@ -36,16 +36,14 @@ describe('Auth login test', function() {
     });
 
     describe('test with user logged', () => {
-
         before(() => {
             app.use(function(req, res, next) {
-                req.session.user = users.ADMIN;
-                console.log(req.session.user);
-                next();
-            });
+              req.session.user = users.ADMIN;
+              next();
+            })
         });
 
-        it.skip('should logout after login', (done) => {
+        it('should logout after login', (done) => {
             let options = {
                 url: 'http://localhost:3000/auth/logout',
             }

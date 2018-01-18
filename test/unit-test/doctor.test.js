@@ -1,40 +1,46 @@
 'use strict';
 const should = require('should');
-const request = require('request');
 const assert = require('assert');
 const _ = require('lodash');
-const app = require('../../app');
+const util = require('../util');
+const users = util.users;
+const doctors = util.doctors;
 const mongoose = require('mongoose');
-const users = require('../users');
+const app = require('../../app');
+var request = require('supertest');
 
 
 describe('Doctors tests', function() {
-
+  before(function() {
+    request = request.agent(app);
+  });
   describe('should NOT can access to doctors api when not exits user logged', function() {
-    before(function() {
-      
-    });
     it('should not can access to /api/doctor/ endpoint if the admin is not logged', function(done) {
+      this.timeout(80000);
       let options = {
-        url : 'http://localhost:3000/api/doctor/'
+        url : '/api/doctor/'
       };
-      request.get(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .get(options.url)
+      .expect(401)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 401);
         done();
       });
     });
     it('should not can access to /api/doctor/:id endpoint if the admin is not logged', function(done) {
       let options = {
-        url : 'http://localhost:3000/api/doctor/' + users.DOCTOR._id
+        url : '/api/doctor/' + users.DOCTOR._id
       };
-      request.get(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .get(options.url)
+      .expect(401)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 401);
         done();
       });
     });
@@ -45,14 +51,17 @@ describe('Doctors tests', function() {
         password: 'alejandromolina'
       };
       let options = {
-        url : 'http://localhost:3000/api/doctor/save',
+        url : '/api/doctor/save',
         form: {doctor}
       };
-      request.post(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .post(options.url)
+      .send(options.form)
+      .expect(401)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 401);
         done();
       });
     });
@@ -61,14 +70,17 @@ describe('Doctors tests', function() {
       let doctorId = doctor._id;
       doctor.password = 'nuevopasswordeditado';
       let options = {
-        url : 'http://localhost:3000/api/doctor/edit',
+        url : '/api/doctor/edit',
         form: {doctor, doctorId}
       };
-      request.put(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .put(options.url)
+      .send(options.form)
+      .expect(401)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 401);
         done();
       });
     });
@@ -77,22 +89,35 @@ describe('Doctors tests', function() {
 
 
   describe('should access to doctors api with a ADMIN logged', function() {
-    before(function() {
-      this.timeout(8000);
-      app.use(function(req, res, next) {
-        req.session.user = users.ADMIN;
+    before(function(done) {
+      this.timeout(80000);
+      let options = {
+          url: '/auth/login',
+          form: util.CREDENTIALS(users.ADMIN)
+      }
+      request
+      .post(options.url)
+      .send(options.form)
+      .expect(200)
+      .end(function(err, res) {
+          if (err) {
+              throw err;
+          }
+          done();
       });
     });
     
     it('test /api/doctor/ with ADMIN logged', function(done) {
       let options = {
-        url : 'http://localhost:3000/api/doctor/'
+        url : '/api/doctor/'
       };
-      request.get(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .get(options.url)
+      .expect(200)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 200);
         done();
       });
     });
@@ -100,52 +125,56 @@ describe('Doctors tests', function() {
 
     it('test /api/doctor/:id with ADMIN logged', function(done) {
       let options = {
-        url : 'http://localhost:3000/api/doctor/' + users.ADMIN._id
+        url : '/api/doctor/' + users.ADMIN._id
       };
-      request.get(options, function (err, httpResponse, body) {
-        if (err) {
-            return should.not.exist(err);
-            }
-        should(httpResponse).has.property('statusCode', 200);
+      request
+      .get(options.url)
+      .expect(200)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
+        }
         done();
       });
     });
 
 
     it('test /api/doctor/save with ADMIN logged', function(done) {
-      let doctor = {
-        role: 'DOCTOR',
-        username: 'julian olarte',
-        password: 'julian21olarte'
-      };
+      let doctor = doctors.doctor_1;
       let options = {
-        url : 'http://localhost:3000/api/doctor/save/',
+        url : '/api/doctor/save/',
         form: {doctor}
       };
-      request.post(options, function (err, httpResponse, body) {
-        if (err) {
-          console.log(httpResponse);
-          return should.not.exist(err);
+      request
+      .post(options.url)
+      .send(options.form)
+      .expect(200)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 200);
         done();
       });
     });
     
     
     it('test /api/doctor/edit with ADMIN logged', function(done) {
-      let doctor = users.DOCTOR;
+      this.timeout(80000);
+      let doctor = doctors.doctor_1;
       let doctorId = doctor._id;
       doctor.password = 'passwordactualizado';
       let options = {
-        url : 'http://localhost:3000/api/doctor/edit/',
+        url : '/api/doctor/edit/',
         form: {doctor, doctorId}
       };
-      request.put(options, function (err, httpResponse, body) {
-        if (err) {
-          return should.not.exist(err);
+      request
+      .put(options.url)
+      .send(options.form)
+      .expect(200)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
         }
-        should(httpResponse).has.property('statusCode', 200);
         done();
       });
     });

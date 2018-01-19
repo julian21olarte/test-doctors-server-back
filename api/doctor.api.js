@@ -9,7 +9,12 @@ function getDoctor(req, res) {
     }
     doctorService.getDoctor( doctorId )
     .then( doctor => {
-        res.status(200).send({doctor: doctor, title: 'Detalle de doctor'} );
+        if(doctor) {
+            res.status(200).send({doctor: doctor, title: 'Detalle de doctor'} );
+        }
+        else {
+            res.status(404).send( {error, message: 'Doctor no encontrado'} );
+        }
     })
     .catch(error => {
         res.status(404).send( {error, message: 'Doctor no encontrado'} );
@@ -21,10 +26,15 @@ function getDoctor(req, res) {
 function getDoctors(req, res) {
     doctorService.getDoctors()
     .then( doctors => {
-        res.status(200).send( {doctors} );
+        if(doctors) {
+            res.status(200).send( {doctors} );
+        }
+        else {
+            res.status(404).send( {message: 'Doctores no encontrados'} );
+        }
     })
     .catch(error => {
-        res.status(405).send( {error} );
+        res.status(404).send( {error} );
     })
 }
 

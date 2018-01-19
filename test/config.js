@@ -14,8 +14,8 @@ after(function(done) {
     this.timeout(1000000);
     mongoose.connect(mongo_url, function(){
         mongoose.connection.db.dropDatabase(function(){
-            server.stop();
             done();
         });   
     });
+    server.stop();
 });

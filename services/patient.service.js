@@ -15,7 +15,7 @@ function getPatient(patientId) {
 
 
 function getPatientByDocument(document) {
-    return patientSchema.findById( document );
+    return patientSchema.find( {document} );
 }
 
 

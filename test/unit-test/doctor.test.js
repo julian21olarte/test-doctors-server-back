@@ -30,26 +30,8 @@ describe('Doctors tests', function() {
         done();
       });
     });
-    it('should not can access to /api/doctor/:id endpoint if the admin is not logged', function(done) {
-      let options = {
-        url : '/api/doctor/' + users.DOCTOR._id
-      };
-      request
-      .get(options.url)
-      .expect(401)
-      .end(function(err, res) {
-        if(err) {
-          throw err;
-        }
-        done();
-      });
-    });
     it('should not can access to /api/doctor/save endpoint if the admin is not logged', function(done) {
-      let doctor = {
-        role: 'DOCTOR',
-        username: 'alejandro molina',
-        password: 'alejandromolina'
-      };
+      let doctor = doctors.doctor_1;
       let options = {
         url : '/api/doctor/save',
         form: {doctor}
@@ -65,8 +47,23 @@ describe('Doctors tests', function() {
         done();
       });
     });
+    it('should not can access to /api/doctor/:id endpoint if the admin is not logged', function(done) {
+      let options = {
+        url : '/api/doctor/' + doctors.doctor_1._id
+      };
+      request
+      .get(options.url)
+      .expect(401)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
+        }
+        done();
+      });
+    });
+    
     it('should not can access to /api/doctor/edit endpoint if the admin is not logged', function(done) {
-      let doctor = users.DOCTOR;
+      let doctor = doctors.doctor_1;
       let doctorId = doctor._id;
       doctor.password = 'nuevopasswordeditado';
       let options = {
@@ -122,23 +119,7 @@ describe('Doctors tests', function() {
       });
     });
 
-
-    it('test /api/doctor/:id with ADMIN logged', function(done) {
-      let options = {
-        url : '/api/doctor/' + users.ADMIN._id
-      };
-      request
-      .get(options.url)
-      .expect(200)
-      .end(function(err, res) {
-        if(err) {
-          throw err;
-        }
-        done();
-      });
-    });
-
-
+    
     it('test /api/doctor/save with ADMIN logged', function(done) {
       let doctor = doctors.doctor_1;
       let options = {
@@ -156,6 +137,23 @@ describe('Doctors tests', function() {
         done();
       });
     });
+
+    it('test /api/doctor/:id with ADMIN logged', function(done) {
+      let options = {
+        url : '/api/doctor/' + doctors.doctor_1._id
+      };
+      request
+      .get(options.url)
+      .expect(200)
+      .end(function(err, res) {
+        if(err) {
+          throw err;
+        }
+        done();
+      });
+    });
+
+
     
     
     it('test /api/doctor/edit with ADMIN logged', function(done) {

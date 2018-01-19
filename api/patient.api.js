@@ -3,7 +3,6 @@ var patientService = require('../services/patient.service');
 
 
 function getPatients(req, res) {
-    console.log('entra a getPatients...');
     patientService.getPatients()
     .then( patients => {
         patients.forEach(patient => {

@@ -12,6 +12,9 @@ function login(req, res) {
         else {
             res.status(404).send('Error, No existe ningun usuario con esos datos.');
         }
+    })
+    .catch(error => {
+        res.status(404).send('Error, No existe ningun usuario con esos datos.');
     });
 }
 

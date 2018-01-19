@@ -15,7 +15,7 @@ describe('Doctors tests', function() {
     request = request.agent(app);
   });
   describe('should NOT can access to doctors api when not exits user logged', function() {
-    it('should not can access to /api/doctor/ endpoint if the admin is not logged', function(done) {
+    it('should NOT can access (401 Unauthenticate) to /api/doctor/ endpoint if the admin is not logged', function(done) {
       this.timeout(80000);
       let options = {
         url : '/api/doctor/'
@@ -30,7 +30,7 @@ describe('Doctors tests', function() {
         done();
       });
     });
-    it('should not can access to /api/doctor/save endpoint if the admin is not logged', function(done) {
+    it('should NOT can access (401 Unauthenticate) to /api/doctor/save endpoint if the admin is not logged', function(done) {
       let doctor = doctors.doctor_1;
       let options = {
         url : '/api/doctor/save',
@@ -47,7 +47,7 @@ describe('Doctors tests', function() {
         done();
       });
     });
-    it('should not can access to /api/doctor/:id endpoint if the admin is not logged', function(done) {
+    it('should NOT can access (401 Unauthenticate) to /api/doctor/:id endpoint if the admin is not logged', function(done) {
       let options = {
         url : '/api/doctor/' + doctors.doctor_1._id
       };
@@ -62,7 +62,7 @@ describe('Doctors tests', function() {
       });
     });
     
-    it('should not can access to /api/doctor/edit endpoint if the admin is not logged', function(done) {
+    it('should NOT can access (401 Unauthenticate) to /api/doctor/edit endpoint if the admin is not logged', function(done) {
       let doctor = doctors.doctor_1;
       let doctorId = doctor._id;
       doctor.password = 'nuevopasswordeditado';
@@ -85,7 +85,7 @@ describe('Doctors tests', function() {
 
 
 
-  describe('should access to doctors api with a ADMIN logged', function() {
+  describe('should can access (200 OK) to doctors api with a ADMIN logged', function() {
     before(function(done) {
       this.timeout(80000);
       let options = {

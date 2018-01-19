@@ -35,13 +35,27 @@ describe('Auth tests', function() {
     });
 
     describe('Logout tests', function() {
-        it('should logout after login', function(done) {
+        it('should can logout after login', function(done) {
             let options = {
                 url: '/auth/logout',
             }
             request
             .post(options.url)
             .expect(200)
+            .end(function(err, res) {
+                if(err) {
+                    throw err;
+                }
+                done();
+            });
+        });
+        it('should NOT can logout (401 Unauthenticate) without user previous logged', function(done) {
+            let options = {
+                url: '/auth/logout',
+            }
+            request
+            .post(options.url)
+            .expect(401)
             .end(function(err, res) {
                 if(err) {
                     throw err;

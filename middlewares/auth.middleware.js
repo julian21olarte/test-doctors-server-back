@@ -36,7 +36,7 @@ function allowPath(role, routes, req) {
         allow = permissions.APP;
     }
     if( allow[routes] && allow[routes].includes(req.method) ) {
-        if(req.method === "PUT" && req.body.patient.createdBy && (req.session.user._id !== req.body.patient.createdBy)) {
+        if(req.method === "PUT" && req.body.patient && req.body.patient.createdBy && (req.session.user._id !== req.body.patient.createdBy)) {
             return false;
         }
         return true;

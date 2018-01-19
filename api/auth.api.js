@@ -21,8 +21,11 @@ function login(req, res) {
 
 
 function logout(req, res) {
-    req.session.destroy();
-    res.status(200).send("Logout successfull");
+    if(req.session.user) {
+        req.session.destroy();
+        return res.status(200).send("Logout successfull");
+    }
+    res.status(401).send('Unauthenticate');
 }
 
 

@@ -98,18 +98,17 @@ function addGlucose(req, res) {
 
 
 function getGlucose(req, res) {
-    let patientId = req.body.patientId;
+    let patientId = req.params.id;
     patientService.getPatient(patientId)
         .then(patient => {
             if (patient) {
-                console.log(patient);
-                patientService.glucose.forEach(glucose => {
+                patient.glucose.forEach(glucose => {
                     if (glucose.createdBy !== req.session.user._id) {
                         delete glucose.createdBy;
                     }
                 });
+                res.status(200).send({ glucoseMeditions: patient.glucose });
             }
-            res.status(200).send({ glucoseMeditions: patient.glucose });
         })
         .catch(error => {
             res.status(404).send({ error });
@@ -126,7 +125,7 @@ function editGlucose(req, res) {
         .then(patient => {
             //obtengo el paciente
             if (!patient) {
-                res.status(404).send({ message: 'No existe el paciente' });
+                res.status(401).send({ message: 'No existe el paciente' });
             }
             let index = patient.glucose.findIndex(meditionGlucose => {
                 return meditionGlucose._id === glucoseId;
@@ -142,7 +141,7 @@ function editGlucose(req, res) {
                     }
                 })
                 .catch(error => {
-                    res.status(404).send({ error, message: "Medicion de glucosa no fue actualizada correctamente" });
+                    res.status(402).send({ error, message: "Medicion de glucosa no fue actualizada correctamente" });
                 })
         })
         .catch(error => {

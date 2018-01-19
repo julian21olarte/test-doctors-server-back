@@ -16,7 +16,8 @@
     "express-session": "^1.15.6",
     "mongodb": "^3.0.1",
     "mongoose": "latest",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "supertest-as-promised": "^4.0.2"
   },
   "devDependencies": {
     "mocha": "^4.1.0",

@@ -9,59 +9,78 @@ var request = require('supertest');
 
 const userModel = require('../../models/user.model');
 
-describe('Auth tests', function() {
-    before(function() {
+describe('Auth tests', function () {
+    before(function () {
         request = request.agent(app);
-        //userModel.create(Object.values(users));
     });
-    describe('Login tests', function() {
-        it('should can login with admin account', function(done) {
-            this.timeout(80000);
-            let options = {
-                url: '/auth/login',
-                form: util.CREDENTIALS(users.ADMIN)
-            }
-            request
-            .post(options.url)
-            .send(options.form)
-            .expect(200)
-            .end(function(err, res) {
-                if (err) {
-                    throw err;
+    describe('Login tests', function () {
+        // it('should can login with admin account', function (done) {
+        //     this.timeout(80000);
+        //     let options = {
+        //         url: '/auth/login',
+        //         form: util.CREDENTIALS(users.ADMIN)
+        //     }
+        //     request
+        //         .post(options.url)
+        //         .send(options.form)
+        //         .expect(200)
+        //         .end(function (err, res) {
+        //             if (err) {
+        //                 throw err;
+        //             }
+        //             done();
+        //         });
+        // });
+
+        let usersKeys = Object.keys(users);
+        usersKeys.forEach(key => {
+            it(`should can login with ${key} account`, function (done) {
+                let options = {
+                    url: '/auth/login',
+                    form: util.CREDENTIALS(users[key])
                 }
-                done();
+                request
+                    .post(options.url)
+                    .send(options.form)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            throw err;
+                        }
+                        done();
+                    });
             });
         });
     });
 
-    describe('Logout tests', function() {
-        it('should can logout after login', function(done) {
+    describe('Logout tests', function () {
+        it('should can logout after login', function (done) {
             let options = {
                 url: '/auth/logout',
             }
             request
-            .post(options.url)
-            .expect(200)
-            .end(function(err, res) {
-                if(err) {
-                    throw err;
-                }
-                done();
-            });
+                .post(options.url)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    done();
+                });
         });
-        it('should NOT can logout (401 Unauthenticate) without user previous logged', function(done) {
+        it('should NOT can logout (401 Unauthenticate) without user previous logged', function (done) {
             let options = {
                 url: '/auth/logout',
             }
             request
-            .post(options.url)
-            .expect(401)
-            .end(function(err, res) {
-                if(err) {
-                    throw err;
-                }
-                done();
-            });
+                .post(options.url)
+                .expect(401)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+                    done();
+                });
         });
     });
 });

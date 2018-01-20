@@ -6,16 +6,28 @@ const users = require('./util').users;
 const userModel = require('../models/user.model');
 
 const mongo_url = db_config.test;
-before(function() {
-    userModel.create(Object.values(users));
+before(function (done) {
+    this.timeout(1000000);
+    clearDb(function () {
+        userModel.create(Object.values(users), function(err) {
+            if(err) {
+                throw err;
+            }
+            done();
+        });
+    });
 });
 
-after(function(done) {
+after(function (done) {
     this.timeout(1000000);
-    mongoose.connect(mongo_url, function(){
-        mongoose.connection.db.dropDatabase(function(){
-            done();
-        });   
+    clearDb(function () {
+        server.stop();
+        done();
     });
-    server.stop();
 });
+
+function clearDb(callback) {
+    mongoose.connect(mongo_url, function () {
+        mongoose.connection.db.dropDatabase(callback);
+    });
+}

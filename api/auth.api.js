@@ -7,6 +7,11 @@ function login(req, res) {
     .then(user => {
         if( user ) {
             req.session.user = user;
+            req.session.save(err => {
+                if(err) {
+                    throw err;
+                }
+            });
             res.status(200).send({user, message: 'Login exitoso'});
         }
         else {

@@ -20,7 +20,10 @@ var app = express();
 app.use(session({
   secret: 'julian21olarte',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true,
+  cookie: {
+    secure: false
+  }
 }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -37,7 +40,7 @@ app.use('/auth', auth);
 var server = app.listen(port, () => {
   console.log("Server listening on " + port)
 });
-app.stop = function() {
+app.stop = function () {
   server.close();
 }
 
